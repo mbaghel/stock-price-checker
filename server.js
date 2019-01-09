@@ -4,6 +4,7 @@ var express     = require('express');
 var bodyParser  = require('body-parser');
 var expect      = require('chai').expect;
 var cors        = require('cors');
+var csp         = require('helmet').contentSecurityPolicy;
 
 var apiRoutes         = require('./routes/api.js');
 var fccTestingRoutes  = require('./routes/fcctesting.js');
@@ -17,6 +18,15 @@ app.enable('trust proxy');
 app.use('/public', express.static(process.cwd() + '/public'));
 
 app.use(cors({origin: '*'})); //For FCC testing purposes only
+
+// set content security policy
+app.use(csp({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'sha256-mY6n7Ke7vPE7tGzNRXNG3aS49eFLKJKl/7Qr2MJMODA='", "https://code.jquery.com/"],
+    styleSrc: ["'unsafe-inline'", "https://puzzled-python.glitch.me"]
+  }
+}))
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
